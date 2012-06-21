@@ -16,6 +16,8 @@ Gem::Specification.new do |gem|
   gem.version       = Smspilot::VERSION
 
   gem.add_development_dependency 'rspec', '~> 2.5'
+  gem.add_development_dependency 'webmock'
+
 
 
 end

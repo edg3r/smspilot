@@ -1,4 +1,5 @@
 require 'rspec'
+require 'webmock/rspec'
 require 'smspilot'
 
 RSpec.configure do |config|
