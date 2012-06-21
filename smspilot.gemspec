@@ -14,4 +14,8 @@ Gem::Specification.new do |gem|
   gem.name          = "smspilot"
   gem.require_paths = ["lib"]
   gem.version       = Smspilot::VERSION
+
+  gem.add_development_dependency 'rspec', '~> 2.5'
+
+
 end
