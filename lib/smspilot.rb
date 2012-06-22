@@ -16,11 +16,15 @@ module Smspilot
 	    req = Net::HTTP::Post.new(GATE_URI.path, initheader = {'Content-Type' =>'application/json'})
 	    req.body = build_request_body(sms_id, sms_from, sms_to, message_text)
       response = Net::HTTP.new(GATE_URI.hostname).start {|http| http.request(req) }
-      puts "Response #{response.code} #{response.message}:
-      #{response.body}"
+      # puts "Response #{response.code} #{response.message}:
+      # #{response.body}"
+
+      json = JSON.parse(response.body)
+      puts json
+      puts "ERRORS" if json.has_key? 'error'
  		end
 
-	private 
+	private
 		
 		def build_request_body(sms_id, sms_from, sms_to, message_text)
 			{"apikey" => @apikey,
