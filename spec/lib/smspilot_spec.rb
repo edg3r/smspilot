@@ -7,9 +7,7 @@ describe Smspilot do
   let(:sms_id) {'12345'}
   let(:sms_from) {'SMSPILOT'}
   let(:sms_to) {79091112233}
-  let(:message_text)
-
-  let(:sender) {Sender.new(:apikey => "XYZ")}
+  let(:message_text) {"Тест"}
 
   let(:json_success) {'JSON
       {    "send": [    
@@ -24,15 +22,20 @@ describe Smspilot do
 #TODO add specs for sms delivery statuses
 #TODO add specs for parameter validations
 
-  describe "#send_message" do 
+  describe "#send_sms" do 
+
+    before do
+      @sender = Smspilot::Sender.new(:apikey => "XYZ")
+    end
+
     it "should return true when succeeded" do
-      stub_request(:any, "smspilot.ru").to_return(:body => json_success, :status => 200 )
-      sender.send_message(sms_id, sms_from, sms_to, message_text).should eql(true)
+      stub_request(:post, "http://smspilot.ru/api2.php").to_return(:body => json_success, :status => 200 )
+      @sender.send_sms(sms_id, sms_from, sms_to, message_text).should eql(true)
     end
  
     it "should return false if there are errors" do
-      stub_request(:any, "smspilot.ru").to_return(:body => json_success, :status => 200 )
-      sender.send_message(sms_id, sms_from, sms_to, message_text).should eql(false)
+      stub_request(:post, "http://smspilot.ru/api2.php").to_return(:body => json_success, :status => 200 )
+      @sender.send_sms(sms_id, sms_from, sms_to, message_text).should eql(false)
     end
 
   end
