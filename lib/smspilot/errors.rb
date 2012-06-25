@@ -44,6 +44,10 @@ module Smspilot
     class UnknownApiError < ApiError; end # unknown codes
 
 
+    class TimeoutError < StandardError; end;
+    class InvalidJsonResponseError < StandardError; end;
+    class InvalidResposeStatusError < StandardError; end;
+
 
   end
 end
