@@ -16,7 +16,7 @@ describe Smspilot do
   describe "#send_sms" do 
     
     let(:json_success) {'{"send":[{"id":"12345","server_id":"10005","from":"SMSPILOT","to":"79091112233","text":"Тест","zone":"1","parts":"1","credits":"1","status":"0","error":"0"}],"server_packet_id":"1234","balance":"10000"}'}
-    let(:json_failure) {'{"error":{"code":"241","description":"Youdonthaveenoughcredits"}}'}
+    let(:json_failure) {'{"error":{"code":"1337","description":"leeterror"}}'}
 
     before do
       @client = Smspilot.new "apikey123123"
@@ -27,10 +27,27 @@ describe Smspilot do
       @client.send_sms(sms_id, sms_from, sms_to, message_text).should eql(true)
     end
  
-    it "should return false if there are errors" do
-      stub_request(:post, "http://smspilot.ru/api2.php").to_return(:body => json_failure, :status => 200, :content_type => 'application/json' )
-      @client.send_sms(sms_id, sms_from, sms_to, message_text).should eql(false)
+    describe "errors" do
+
+      before do
+        stub_request(:post, "http://smspilot.ru/api2.php").to_return(:body => json_failure, :status => 200, :content_type => 'application/json' )
+      end
+
+      it "should raise unknown apierror when there is correct error response" do
+        stub_request(:post, "http://smspilot.ru/api2.php").to_return(:body => json_failure, :status => 200, :content_type => 'application/json' )
+        expect {@client.send_sms(sms_id, sms_from, sms_to, message_text)}.to raise_error(Smspilot::Error::UnknownApiError)
+      end 
+
+
+      it "should raise correct apierror type when there is correct error response" do
+        Smspilot::Error::API_ERROR_CODES["1337"] = "LeetError"
+        class Smspilot::Error::LeetError < Smspilot::Error::ApiError; end    
+        stub_request(:post, "http://smspilot.ru/api2.php").to_return(:body => json_failure, :status => 200, :content_type => 'application/json' )
+        expect {@client.send_sms(sms_id, sms_from, sms_to, message_text)}.to raise_error(Smspilot::Error::LeetError)
+      end 
+
     end
+ 
 
   end
 

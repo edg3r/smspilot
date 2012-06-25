@@ -1,7 +1,9 @@
 module Smspilot
   module Error
+
+    API_ERROR_CODES = {}
+
     class ApiError < StandardError
-      API_ERROR_CODES = {}
 
       def self.raise_by_code(code=nil)
         if API_ERROR_CODES[code].nil?
