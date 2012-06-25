@@ -1,9 +1,11 @@
 require 'smspilot/connection'
 require 'smspilot/configuration'
+require 'smspilot/request'
 
 module Smspilot
 	class Api
 		include Connection
+		include Request
 
     attr_accessor *Configuration::VALID_OPTIONS_KEYS
 
