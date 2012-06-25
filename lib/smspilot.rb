@@ -1,35 +1,20 @@
-require "smspilot/version"
-require 'net/http'
-require 'json'
+require "smspilot/client"
+require "smspilot/configuration"
 
 module Smspilot
 
-	GATE_URI = URI("http://smspilot.ru/api2.php")
+  extend Configuration
 
-	class Sender
+  class << self
+    def new options = {}
+      if options.is_a? String
+        Smspilot::Client.new :api_key => options
+      elsif options.is_a? Hash
+        Smspilot::Client.new options
+      else
+        raise ArgumentError
+      end
+    end
+  end
 
-		def initialize(apikey)
-			@apikey = apikey
-		end
-
-		def send_sms(sms_id, sms_from, sms_to, message_text)
-	    req = Net::HTTP::Post.new(GATE_URI.path, initheader = {'Content-Type' =>'application/json'})
-	    req.body = build_request_body(sms_id, sms_from, sms_to, message_text)
-      response = Net::HTTP.new(GATE_URI.hostname).start {|http| http.request(req) }
-      # puts "Response #{response.code} #{response.message}:
-      # #{response.body}"
-
-      json = JSON.parse(response.body)
-      puts json
-      puts "ERRORS" if json.has_key? 'error'
- 		end
-
-	private
-		
-		def build_request_body(sms_id, sms_from, sms_to, message_text)
-			{"apikey" => @apikey,
-			 "send" => [{"id" => sms_id, "from" => sms_from, "to" => sms_to, "text" => message_text}] 
-			 }.to_json
-		end
-	end
 end

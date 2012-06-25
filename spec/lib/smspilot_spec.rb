@@ -19,17 +19,17 @@ describe Smspilot do
     let(:json_failure) {'{"error":{"code":"241","description":"Youdonthaveenoughcredits"}}'}
 
     before do
-      @sender = Smspilot::Sender.new(:apikey => "XYZ")
+      @client = Smspilot.new "apikey123123"
     end
 
     it "should return true when succeeded" do
       stub_request(:post, "http://smspilot.ru/api2.php").to_return(:body => json_success, :status => 200, :content_type => 'application/json' )
-      @sender.send_sms(sms_id, sms_from, sms_to, message_text).should eql(true)
+      @client.send_sms(sms_id, sms_from, sms_to, message_text).should eql(true)
     end
  
     it "should return false if there are errors" do
       stub_request(:post, "http://smspilot.ru/api2.php").to_return(:body => json_failure, :status => 200, :content_type => 'application/json' )
-      @sender.send_sms(sms_id, sms_from, sms_to, message_text).should eql(false)
+      @client.send_sms(sms_id, sms_from, sms_to, message_text).should eql(false)
     end
 
   end
