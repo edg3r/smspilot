@@ -3,7 +3,7 @@ module Smspilot
     class ApiError < StandardError
       API_ERROR_CODES = {}
 
-      def raise_by_code(code=nil)
+      def self.raise_by_code(code=nil)
         if API_ERROR_CODES[code].nil?
           raise UnknownApiError
         else
