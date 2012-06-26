@@ -1,6 +1,7 @@
 require 'timeout'
 require 'faraday_middleware'
 require 'faraday'
+require 'smspilot/errors'
 
 module Smspilot
   module Request
@@ -12,10 +13,22 @@ module Smspilot
         req.body = json_body
       end
 
-      #successful
+      #TIMEOUTS processing
+
+      #BAD JSON Processings
+
       json_response = JSON.parse(response.body)
+
+      #apierrors
+
+      unless json_response["error"].nil?
+        Error::ApiError.raise_by_code(json_response["error"]["code"])
+      end
+
+      #successful
       result = json_response.delete("send")[0]
       result.merge json_response
+
 
     end
 

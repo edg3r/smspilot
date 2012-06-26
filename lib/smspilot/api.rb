@@ -1,7 +1,6 @@
 require 'smspilot/connection'
 require 'smspilot/configuration'
 require 'smspilot/request'
-require 'smspilot/errors'
 require 'json'
 
 module Smspilot

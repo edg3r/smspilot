@@ -9,7 +9,7 @@ module Smspilot
         if API_ERROR_CODES[code].nil?
           raise UnknownApiError
         else
-          raise API_ERROR_CODES[code].constantize
+          raise Smspilot::Error.const_get(API_ERROR_CODES[code])
         end
       end
     end
