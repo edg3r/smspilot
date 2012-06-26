@@ -4,6 +4,43 @@ require 'faraday'
 
 module Smspilot
   module Request
+
+# TODO ERROES CHECK
+
+    def send_request(json_body)
+      response = connection.post do |req|
+        req.body = json_body
+      end
+
+      #successful
+      json_response = JSON.parse(response.body)
+      result = json_response.delete("send")[0]
+      result.merge json_response
+
+    end
+
+
+
+  #   def send_sms(sms_id, sms_from, sms_to, message_text)
+  #     req = Net::HTTP::Post.new(GATE_URI.path, initheader = {'Content-Type' =>'application/json'})
+  #     req.body = build_request_body(sms_id, sms_from, sms_to, message_text)
+ #      response = Net::HTTP.new(GATE_URI.hostname).start {|http| http.request(req) }
+ #      # puts "Response #{response.code} #{response.message}:
+ #      # #{response.body}"
+
+ #      json = JSON.parse(response.body)
+ #      puts json
+ #      puts "ERRORS" if json.has_key? 'error'
+ #    end
+
+
+  # private
+    
+  #   def build_request_body(sms_id, sms_from, sms_to, message_text)
+  #     {"apikey" => @apikey,
+  #      "send" => [{"id" => sms_id, "from" => sms_from, "to" => sms_to, "text" => message_text}] 
+  #      }.to_json
+  #   end    
     # def get path, options = {}
     #   request(:get, path, options)
     # end
@@ -57,5 +94,8 @@ module Smspilot
 
     #     response
     #   end
+
+
+
   end
 end
