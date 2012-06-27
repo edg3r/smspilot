@@ -6,29 +6,30 @@ require 'smspilot/errors'
 module Smspilot
   module Request
 
-# TODO ERROES CHECK
+
+# TODO ERRORS CHECK
 
     def send_request(json_body)
       response = connection.post do |req|
         req.body = json_body
       end
+      
+      logger.info("send_sms request")
+      #TIMEOUTS errors processing
 
-      #TIMEOUTS processing
-
-      #BAD JSON Processings
+      #BAD JSON errors Processings
 
       json_response = JSON.parse(response.body)
 
       #apierrors
 
       unless json_response["error"].nil?
+        logger.error("#{json_response["error"]["code"]}")
         Error::ApiError.raise_by_code(json_response["error"]["code"])
       end
 
       #successful
-      result = json_response.delete("send")[0]
-      result.merge json_response
-
+      json_response
 
     end
 

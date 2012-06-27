@@ -21,7 +21,14 @@ module Smspilot
 			json_body = {"apikey" => api_key,
        				"send" => [{"id" => sms_id, "from" => sms_from, "to" => sms_to, "text" => message_text}] 
       				}.to_json    	
-    	send_request json_body
+    	json_response = send_request json_body
+
+      result = json_response.delete("send")[0]
+      result.merge json_response
+
+    rescue Exception => e  
+      process_error(e)
+
     end
 
     def check_sms_status
@@ -35,9 +42,17 @@ module Smspilot
 		# def initialize(api_key)
 		# 	@api_key = api_key
 		# end
+  private
+
+    def process_error(e)
+      #kind_of?
+      #TIMEOUT ERRORS
+      #API ERRORS
+      #INVALID JSON ERRORS
+      #RESPONSE STATUS ERRORS
 
 
-
+    end
 
 	end
 end
