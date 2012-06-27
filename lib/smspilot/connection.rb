@@ -10,7 +10,9 @@ module Smspilot
           :headers => {
             :user_agent => user_agent
           },
-          :url => endpoint
+          :url => endpoint,
+          :timeout => timeout,
+          :open_timeout => timeout
         }
 
         Faraday.new options do |conn|

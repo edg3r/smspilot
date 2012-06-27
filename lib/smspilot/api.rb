@@ -1,6 +1,7 @@
 require 'smspilot/connection'
 require 'smspilot/configuration'
 require 'smspilot/request'
+require 'smspilot/errors'
 require 'json'
 
 module Smspilot
@@ -31,7 +32,7 @@ module Smspilot
 
     end
 
-    def check_sms_status
+    def check_sms_status (sms_server_id)
     	true
     end
 
@@ -45,7 +46,16 @@ module Smspilot
   private
 
     def process_error(e)
-      #kind_of?
+      if e.kind_of? Smspilot::Error::ApiError
+        logger.error("API ERROR #{e}")
+      elsif e.kind_of? Faraday::Error::TimeoutError
+        #return hash error?
+        logger.error("TIMEOUT #{e}")     
+      elsif e.kind_of? JSON::ParserError
+        logger.error("WRONG JSON #{e}")     
+      else
+        raise e
+      end
       #TIMEOUT ERRORS
       #API ERRORS
       #INVALID JSON ERRORS
