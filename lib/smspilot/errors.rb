@@ -1,7 +1,36 @@
 module Smspilot
   module Error
 
-    API_ERROR_CODES = {}
+    API_ERROR_CODES = {
+      "10" => "InputDataRequiredError",
+      "11" => "UnknownInputFormatError",
+      "12" => "InvalidJsonError",
+      "14" => "UnknownCommandError",
+      "100" => "ApiKeyRequired",
+      "101" => "ApiKeyInvalid",
+      "106" => "ApiKeyBlocked",
+      "110" => "SystemError",
+      "113" => "IpRestrictionError",
+      "201" => "FromInvalidError",
+      "202" => "FromDeprecatedError",
+      "210" => "ToRequiredError",
+      "211" => "ToInvalidError",
+      "212" => "ToDeprecatedError",
+      "213" => "UnsupportedZoneError",
+      "220" => "TextRequiredError",
+      "221" => "TextTooLongError",
+      "230" => "IdInvalidError",
+      "231" => "PacketIdInvalidError",
+      "240" => "InputListInvalidError",
+      "241" => "NotEnoughCreditsError",
+      "242" => "SmsCountLimitError",
+      "300" => "ServerIdRequiredError",
+      "301" => "ServerIdInvalidError",
+      "302" => "ServerIdNotFoundError",
+      "303" => "InvalidSmsCheckListError",
+      "304" => "ServerPacketIdInvalidError",
+      "400" => "UserNotFoundError"
+    }
 
     class ApiError < StandardError
 
