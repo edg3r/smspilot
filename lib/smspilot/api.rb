@@ -33,7 +33,10 @@ module Smspilot
     end
 
     def check_balance
-    	true
+      json_body = {"apikey" => api_key,
+              "balance" => [{"balance" => true}] 
+              }.to_json     
+      response = send_request json_body
     end
 
 		# def initialize(api_key)

@@ -48,6 +48,19 @@ describe Smspilot do
 
   end
 
+  describe "#check_balance" do 
+    
+    let(:json_check_response) {'{"balance":31337}'}
+
+    it "should return correct hash when succeeded" do
+      stub_request(:post, "http://smspilot.ru/api2.php").to_return(:body => json_check_response, :status => 200, :headers => {:content_type => 'application/json'} )
+      result = @client.check_sms_status(sms_server_id)
+      result.body.should == {"balance"=> 31337} 
+      result.status.should eql(200)    
+    end
+
+  end
+
 
   describe "send_request errors" do
 
