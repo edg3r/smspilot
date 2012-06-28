@@ -22,18 +22,14 @@ module Smspilot
 			json_body = {"apikey" => api_key,
        				"send" => [{"id" => sms_id, "from" => sms_from, "to" => sms_to, "text" => message_text}] 
       				}.to_json    	
-    	json_response = send_request json_body
-
-      result = json_response.delete("send")[0]
-      result.merge json_response
-
-    rescue Exception => e  
-      process_error(e)
-
+    	response = send_request json_body
     end
 
     def check_sms_status (sms_server_id)
-    	true
+      json_body = {"apikey" => api_key,
+              "check" => [{"server_id" => sms_server_id}] 
+              }.to_json     
+      response = send_request json_body
     end
 
     def check_balance
@@ -43,26 +39,5 @@ module Smspilot
 		# def initialize(api_key)
 		# 	@api_key = api_key
 		# end
-  private
-
-    def process_error(e)
-      if e.kind_of? Smspilot::Error::ApiError
-        logger.error("API ERROR #{e}")
-      elsif e.kind_of? Faraday::Error::TimeoutError
-        #return hash error?
-        logger.error("TIMEOUT #{e}")     
-      elsif e.kind_of? JSON::ParserError
-        logger.error("WRONG JSON #{e}")     
-      else
-        raise e
-      end
-      #TIMEOUT ERRORS
-      #API ERRORS
-      #INVALID JSON ERRORS
-      #RESPONSE STATUS ERRORS
-
-
-    end
-
-	end
+ end
 end

@@ -25,10 +25,11 @@ describe Smspilot do
     
     let(:json_send_response) {'{"send":[{"id":"12345","server_id":"10005","from":"SMSPILOT","to":"79091112233","text":"Тест","zone":"1","parts":"1","credits":"1","status":"0","error":"0"}],"server_packet_id":"1234","balance":"10000"}'}
 
-    it "should return correct hash when succeeded" do
-      stub_request(:post, "http://smspilot.ru/api2.php").to_return(:body => json_send_response, :status => 200, :content_type => 'application/json' )
+    it "should return correct result when succeeded" do
+      stub_request(:post, "http://smspilot.ru/api2.php").to_return(:body => json_send_response, :status => 200, :headers => {:content_type => 'application/json'} )
       result = @client.send_sms(sms_id, sms_from, sms_to, message_text)
-      result.should == {"id" => "12345", "server_id" => "10005","from" =>"SMSPILOT","to" =>"79091112233","text" =>"Тест","zone" => "1","parts" => "1","credits" => "1", "status" => "0", "error" => "0", "server_packet_id" => "1234", "balance" => "10000" }
+      result.body.should == {"send"=> [{"id"=>"12345", "server_id"=>"10005", "from"=>"SMSPILOT", "to"=>"79091112233", "text"=>"Тест", "zone"=>"1", "parts"=>"1", "credits"=>"1", "status"=>"0", "error"=>"0"}], "server_packet_id"=>"1234", "balance"=>"10000"}
+      result.status.should eql(200)
     end
 
   end
@@ -39,9 +40,10 @@ describe Smspilot do
     let(:json_check_response) {'{"check":[{"id":"12345","server_id":"10005","status":"1","modified":"2011-08-11 14:35:00"}]}'}
 
     it "should return correct hash when succeeded" do
-      stub_request(:post, "http://smspilot.ru/api2.php").to_return(:body => json_check_response, :status => 200, :content_type => 'application/json' )
+      stub_request(:post, "http://smspilot.ru/api2.php").to_return(:body => json_check_response, :status => 200, :headers => {:content_type => 'application/json'} )
       result = @client.check_sms_status(sms_server_id)
-      result.should == {"id" => "12345", "server_id" => "10005","status" =>"1","modified" =>"2011-08-11 14:35:00"}
+      result.body.should == {"check"=> [{"id"=>"12345", "server_id"=>"10005", "status"=>"1", "modified"=>"2011-08-11 14:35:00"}]} 
+      result.status.should eql(200)    
     end
 
   end
@@ -50,19 +52,19 @@ describe Smspilot do
   describe "send_request errors" do
 
     before do
-      stub_request(:post, "http://smspilot.ru/api2.php").to_return(:body => json_failure_response, :status => 200, :content_type => 'application/json' )
+      stub_request(:post, "http://smspilot.ru/api2.php").to_return(:body => json_failure_response, :status => 200, :headers => {:content_type => 'application/json'} )
     end
 
     it "should raise unknown apierror when there is correct error response" do
-      stub_request(:post, "http://smspilot.ru/api2.php").to_return(:body => json_failure_response, :status => 200, :content_type => 'application/json' )
-      expect {@client.send_request("")}.to raise_error(Smspilot::Error::UnknownApiError)
+      result = @client.send_request("")
+      result.error.should eql(Smspilot::Error::UnknownApiError)
     end 
 
     it "should raise correct apierror type when there is correct error response" do
       Smspilot::Error::API_ERROR_CODES["1337"] = "LeetError"
       class Smspilot::Error::LeetError < Smspilot::Error::ApiError; end    
-      stub_request(:post, "http://smspilot.ru/api2.php").to_return(:body => json_failure_response, :status => 200, :content_type => 'application/json' )
-      expect {@client.send_request("")}.to raise_error(Smspilot::Error::LeetError)
+      result = @client.send_request("")
+      result.error.should eql(Smspilot::Error::LeetError)
     end 
 
   end 

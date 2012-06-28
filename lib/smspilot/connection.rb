@@ -16,10 +16,11 @@ module Smspilot
         }
 
         Faraday.new options do |conn|
-          conn.request :url_encoded
+          # conn.request :url_encoded
           conn.request :json
 
           conn.response :json, :content_type => /\bjson$/
+          conn.response :mashify
           conn.response :logger
 
           conn.adapter(adapter)

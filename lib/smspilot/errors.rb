@@ -12,6 +12,14 @@ module Smspilot
           raise Smspilot::Error.const_get(API_ERROR_CODES[code])
         end
       end
+
+      def self.get_by_code(code=nil)
+        if API_ERROR_CODES[code].nil?
+          UnknownApiError
+        else
+          Smspilot::Error.const_get(API_ERROR_CODES[code])
+        end
+      end
     end
 
 

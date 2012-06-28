@@ -10,106 +10,38 @@ module Smspilot
 # TODO ERRORS CHECK
 
     def send_request(json_body)
-      response = connection.post do |req|
-        req.body = json_body
-      end
-      
-      logger.info("send_sms request")
-      #TIMEOUTS errors processing
+      begin
+        response = connection.post do |req|
+          req.body = json_body
+        end
+        
+        response_error = (response.status == 200) ? Smspilot::Error::WrongStatusError : nil
+        logger.info("send_sms request")
 
-      #BAD JSON errors Processings
-
-      json_response = JSON.parse(response.body)
+      rescue Exception => e 
+        if e.kind_of? Faraday::Error::TimeoutError
+          logger.error("TIMEOUT #{e}")     
+          response_error = Smspilot::Error::TimeoutError
+        elsif e.kind_of? Faraday::Error::ParsingError
+          logger.error("PARSING #{e}")     
+          response_error = Smspilot::Error::ParsingError      
+        end 
+      end 
 
       #apierrors
 
-      unless json_response["error"].nil?
-        logger.error("#{json_response["error"]["code"]}")
-        Error::ApiError.raise_by_code(json_response["error"]["code"])
+      unless response.body["error"].nil?
+        logger.error("#{response.body["error"]["code"]}")
+        #Error::ApiError.raise_by_code(response.body["error"]["code"])
+        response_error = Error::ApiError.get_by_code(response.body["error"]["code"]).new()
       end
 
       #successful
-      json_response
-
+      # def response.error; response_error end
+      response.instance_eval <<-RESP
+        def error; #{response_error} end
+      RESP
+      response
     end
-
-
-
-  #   def send_sms(sms_id, sms_from, sms_to, message_text)
-  #     req = Net::HTTP::Post.new(GATE_URI.path, initheader = {'Content-Type' =>'application/json'})
-  #     req.body = build_request_body(sms_id, sms_from, sms_to, message_text)
- #      response = Net::HTTP.new(GATE_URI.hostname).start {|http| http.request(req) }
- #      # puts "Response #{response.code} #{response.message}:
- #      # #{response.body}"
-
- #      json = JSON.parse(response.body)
- #      puts json
- #      puts "ERRORS" if json.has_key? 'error'
- #    end
-
-
-  # private
-    
-  #   def build_request_body(sms_id, sms_from, sms_to, message_text)
-  #     {"apikey" => @apikey,
-  #      "send" => [{"id" => sms_id, "from" => sms_from, "to" => sms_to, "text" => message_text}] 
-  #      }.to_json
-  #   end    
-    # def get path, options = {}
-    #   request(:get, path, options)
-    # end
-
-    # def post path, options = {}
-    #   request(:post, path, options)
-    # end
-
-    # def put(path, options = {})
-    #   request(:put, path, options)
-    # end
-
-    # def delete(path, options = {})
-    #   request(:delete, path, options)
-    # end
-
-    # private
-
-    #   def request(method, path, options)
-
-    #     options = options.merge access_token: access_token
-
-    #     response = Timeout.timeout(timeout) do
-    #       connection.send(method) do |request|
-    #         case method.to_sym
-    #         when :get, :delete
-    #           request.url path, options
-    #         when :post, :put
-    #           request.path = path
-    #           request.body = options unless options.empty?
-    #         end
-    #       end
-    #     end
-    #     enchant response
-    #   rescue Timeout::Error
-    #     Class.new { extend TimeoutErrorHelper::ClassMethods }
-    #   rescue MultiJson::DecodeError
-    #     Class.new { extend JsonErrorHelper::ClassMethods }
-    #   end
-
-    #   def enchant response
-    #     if response.status == 200
-    #       def response.ok?; true end
-    #       def response.error_message; nil end
-
-    #     else
-    #       def response.ok?; false end
-    #       def response.error_message; "Status not 200" end
-
-    #     end
-
-    #     response
-    #   end
-
-
-
   end
 end
