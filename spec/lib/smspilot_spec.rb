@@ -68,12 +68,12 @@ describe Smspilot do
       stub_request(:post, "http://smspilot.ru/api2.php").to_return(:body => json_failure_response, :status => 200, :headers => {:content_type => 'application/json'} )
     end
 
-    it "should raise unknown apierror when there is correct error response" do
+    it "should be unknown apierror when there is correct error response" do
       result = @client.send_request({})
       result.error.should eql(Smspilot::Error::UnknownApiError)
     end 
 
-    it "should raise correct apierror type when there is correct error response" do
+    it "should be correct apierror type when there is correct error response" do
       Smspilot::Error::API_ERROR_CODES["1337"] = "LeetError"
       class Smspilot::Error::LeetError < Smspilot::Error::ApiError; end    
       result = @client.send_request({})

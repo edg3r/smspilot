@@ -19,7 +19,7 @@ module Smspilot
     end
 
     def send_sms(sms_id, sms_from, sms_to, message_text)
-      body = {"send" => [{"id" => sms_id, "from" => sms_from, "to" => sms_to, "text" => message_text}]}    	
+      body = {"send" => [{"id" => sms_id, "from" => sms_from, "to" => sms_to, "text" => message_text}]}     
       send_request body
     end
 
@@ -31,6 +31,25 @@ module Smspilot
     def check_balance
       body = {"balance" => [{"balance" => true}]}
       send_request body
+    end
+
+
+    def send_sms!(sms_id, sms_from, sms_to, message_text)
+      response = send_sms(sms_id, sms_from, sms_to, message_text)
+      raise response.error if response.error.kind_of? StandardError
+      response
+    end
+
+    def check_sms_status! (sms_server_id)
+      response = check_sms_status (sms_server_id)
+      raise response.error if response.error.kind_of? StandardError
+      response  
+    end
+
+    def check_balance!
+      response = check_balance
+      raise response.error if response.error.kind_of? StandardError
+      response
     end
 
 		# def initialize(api_key)

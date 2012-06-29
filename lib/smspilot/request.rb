@@ -29,19 +29,15 @@ module Smspilot
         end 
       end 
 
-      #apierrors
-
       unless response.body["error"].nil?
         logger.error("#{response.body["error"]["code"]}")
-        #Error::ApiError.raise_by_code(response.body["error"]["code"])
         response_error = Error::ApiError.get_by_code(response.body["error"]["code"]).new()
       end
 
-      #successful
-      # def response.error; response_error end
       response.instance_eval <<-RESP
         def error; #{response_error} end
       RESP
+
       response
     end
   end
