@@ -19,24 +19,18 @@ module Smspilot
     end
 
     def send_sms(sms_id, sms_from, sms_to, message_text)
-			json_body = {"apikey" => api_key,
-       				"send" => [{"id" => sms_id, "from" => sms_from, "to" => sms_to, "text" => message_text}] 
-      				}.to_json    	
-    	response = send_request json_body
+      body = {"send" => [{"id" => sms_id, "from" => sms_from, "to" => sms_to, "text" => message_text}]}    	
+      send_request body
     end
 
     def check_sms_status (sms_server_id)
-      json_body = {"apikey" => api_key,
-              "check" => [{"server_id" => sms_server_id}] 
-              }.to_json     
-      response = send_request json_body
+      body = {"check" => [{"server_id" => sms_server_id}]}
+      send_request body
     end
 
     def check_balance
-      json_body = {"apikey" => api_key,
-              "balance" => [{"balance" => true}] 
-              }.to_json     
-      response = send_request json_body
+      body = {"balance" => [{"balance" => true}]}
+      send_request body
     end
 
 		# def initialize(api_key)

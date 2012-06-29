@@ -9,7 +9,8 @@ module Smspilot
 
 # TODO ERRORS CHECK
 
-    def send_request(json_body)
+    def send_request(body)
+      json_body = {"apikey" => api_key}.merge(body).to_json
       begin
         response = connection.post do |req|
           req.body = json_body

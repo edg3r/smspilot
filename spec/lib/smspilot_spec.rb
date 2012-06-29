@@ -69,14 +69,14 @@ describe Smspilot do
     end
 
     it "should raise unknown apierror when there is correct error response" do
-      result = @client.send_request("")
+      result = @client.send_request({})
       result.error.should eql(Smspilot::Error::UnknownApiError)
     end 
 
     it "should raise correct apierror type when there is correct error response" do
       Smspilot::Error::API_ERROR_CODES["1337"] = "LeetError"
       class Smspilot::Error::LeetError < Smspilot::Error::ApiError; end    
-      result = @client.send_request("")
+      result = @client.send_request({})
       result.error.should eql(Smspilot::Error::LeetError)
     end 
 
