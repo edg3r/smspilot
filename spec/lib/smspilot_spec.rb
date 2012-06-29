@@ -61,7 +61,6 @@ describe Smspilot do
 
   end
 
-
   describe "send_request errors" do
 
     before do
@@ -80,7 +79,7 @@ describe Smspilot do
       result.error.should eql(Smspilot::Error::LeetError)
     end 
 
-  end 
+  end
 
 
 
