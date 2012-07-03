@@ -23,7 +23,7 @@ module Smspilot
       send_request body
     end
 
-    def check_sms_status (sms_server_id)
+    def check_sms_status(sms_server_id)
       body = {"check" => [{"server_id" => sms_server_id}]}
       send_request body
     end
