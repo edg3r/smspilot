@@ -19,7 +19,7 @@ module Smspilot
     end
 
     def send_sms(sms_id, sms_from, sms_to, message_text)
-      body = {"send" => [{"id" => sms_id, "from" => sms_from, "to" => sms_to, "text" => message_text}]}     
+      body = {"send" => [{"id" => sms_id.to_s, "from" => sms_from.to_s, "to" => sms_to.to_s, "text" => message_text.to_s}]}     
       send_request body
     end
 
