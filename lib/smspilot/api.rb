@@ -5,13 +5,13 @@ require 'smspilot/errors'
 require 'json'
 
 module Smspilot
-	class Api
-		include Connection
-		include Request
+  class Api
+    include Connection
+    include Request
 
     attr_accessor *Configuration::VALID_OPTIONS_KEYS
 
-		def initialize options = {}
+    def initialize options = {}
       options = Smspilot.options.merge(options)
       Configuration::VALID_OPTIONS_KEYS.each do |key|
         send("#{key}=", options[key])
@@ -52,8 +52,8 @@ module Smspilot
       response
     end
 
-		# def initialize(api_key)
-		# 	@api_key = api_key
-		# end
+    # def initialize(api_key)
+    #   @api_key = api_key
+    # end
  end
 end
