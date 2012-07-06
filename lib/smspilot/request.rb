@@ -6,9 +6,6 @@ require 'smspilot/errors'
 module Smspilot
   module Request
 
-
-# TODO ERRORS CHECK
-
     def send_request(body)
       json_body = {"apikey" => api_key}.merge(body).to_json
       begin
