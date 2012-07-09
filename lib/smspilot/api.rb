@@ -9,11 +9,11 @@ module Smspilot
     include Connection
     include Request
 
-    NOT_FOUND_STATUS = -2
-    NOT_DELIVERED_STATUS = -1
-    ACCEPTED_STATUS = 0
-    AT_OPERATOR_STATUS = 1
-    DELIVERED_STATUS = 2    
+    NOT_FOUND_STATUS = "-2"
+    NOT_DELIVERED_STATUS = "-1"
+    ACCEPTED_STATUS = "0"
+    AT_OPERATOR_STATUS = "1"
+    DELIVERED_STATUS = "2"    
 
     attr_accessor *Configuration::VALID_OPTIONS_KEYS
 
@@ -25,7 +25,7 @@ module Smspilot
     end
 
     def send_sms(sms_id, sms_from, sms_to, message_text)
-      body = {"send" => [{"id" => sms_id.to_s, "from" => sms_from.to_s, "to" => sms_to.to_s, "text" => message_text.to_s}]}     
+      body = {:send => [{:id => sms_id.to_s, :from => sms_from.to_s, :to => sms_to.to_s, :text => message_text.to_s}]}     
       response = send_request body
       enhance_response(response, "send")
     end
