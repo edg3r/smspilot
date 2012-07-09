@@ -64,11 +64,11 @@ module Smspilot
     def enhance_response(response, request_type)
       unless response.error
         response.instance_eval <<-RESP
-          def not_found?; #{response.body[request_type].first["status"].to_i.eql? NOT_FOUND_STATUS} end
-          def not_delivered?; #{response.body[request_type].first["status"].to_i.eql? NOT_DELIVERED_STATUS} end
-          def accepted?; #{response.body[request_type].first["status"].to_i.eql? ACCEPTED_STATUS} end
-          def at_operator?; #{response.body[request_type].first["status"].to_i.eql? AT_OPERATOR_STATUS} end
-          def delivered?; #{response.body[request_type].first["status"].to_i.eql? DELIVERED_STATUS} end
+          def not_found?; #{response.body[request_type].first["status"].eql? NOT_FOUND_STATUS} end
+          def not_delivered?; #{response.body[request_type].first["status"].eql? NOT_DELIVERED_STATUS} end
+          def accepted?; #{response.body[request_type].first["status"].eql? ACCEPTED_STATUS} end
+          def at_operator?; #{response.body[request_type].first["status"].eql? AT_OPERATOR_STATUS} end
+          def delivered?; #{response.body[request_type].first["status"].eql? DELIVERED_STATUS} end
         RESP
       end
 

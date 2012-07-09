@@ -37,13 +37,43 @@ describe Smspilot do
 
   describe "#check_sms_status" do 
     
-    let(:json_check_response) {'{"check":[{"id":"12345","server_id":"10005","status":"1","modified":"2011-08-11 14:35:00"}]}'}
 
     it "should return correct hash when succeeded" do
-      stub_request(:post, "http://smspilot.ru/api2.php").to_return(:body => json_check_response, :status => 200, :headers => {:content_type => 'application/json'} )
+      json_check_response = '{"check":[{"id":"12345","server_id":"10005","status":"1","modified":"2011-08-11 14:35:00"}]}'
+      stub_request(:post, "http://smspilot.ru/api2.php").to_return(:body => json_check_response, :status => 200, :headers => {:content_type => 'application/json'} )      
       result = @client.check_sms_status(sms_server_id)
       result.body.should == {"check"=> [{"id"=>"12345", "server_id"=>"10005", "status"=>"1", "modified"=>"2011-08-11 14:35:00"}]} 
       result.status.should eql(200)    
+    end
+    it "should return correct sms status when succeeded" do
+      json_check_response = '{"check":[{"id":"12345","server_id":"10005","status":"-2","modified":"2011-08-11 14:35:00"}]}'
+      stub_request(:post, "http://smspilot.ru/api2.php").to_return(:body => json_check_response, :status => 200, :headers => {:content_type => 'application/json'} )      
+      result = @client.check_sms_status(sms_server_id)
+      result.not_found?.should be_true
+    end
+    it "should return correct sms status when succeeded" do
+      json_check_response = '{"check":[{"id":"12345","server_id":"10005","status":"-1","modified":"2011-08-11 14:35:00"}]}'
+      stub_request(:post, "http://smspilot.ru/api2.php").to_return(:body => json_check_response, :status => 200, :headers => {:content_type => 'application/json'} )      
+      result = @client.check_sms_status(sms_server_id)
+      result.not_delivered?.should be_true   
+    end
+    it "should return correct sms status when succeeded" do
+      json_check_response = '{"check":[{"id":"12345","server_id":"10005","status":"0","modified":"2011-08-11 14:35:00"}]}'
+      stub_request(:post, "http://smspilot.ru/api2.php").to_return(:body => json_check_response, :status => 200, :headers => {:content_type => 'application/json'} )      
+      result = @client.check_sms_status(sms_server_id)
+      result.accepted?.should be_true   
+    end
+    it "should return correct sms status when succeeded" do
+      json_check_response = '{"check":[{"id":"12345","server_id":"10005","status":"1","modified":"2011-08-11 14:35:00"}]}'
+      stub_request(:post, "http://smspilot.ru/api2.php").to_return(:body => json_check_response, :status => 200, :headers => {:content_type => 'application/json'} )      
+      result = @client.check_sms_status(sms_server_id)
+      result.at_operator?.should be_true   
+    end
+    it "should return correct sms status when succeeded" do
+      json_check_response = '{"check":[{"id":"12345","server_id":"10005","status":"2","modified":"2011-08-11 14:35:00"}]}'
+      stub_request(:post, "http://smspilot.ru/api2.php").to_return(:body => json_check_response, :status => 200, :headers => {:content_type => 'application/json'} )      
+      result = @client.check_sms_status(sms_server_id)
+      result.delivered?.should be_true   
     end
 
   end
