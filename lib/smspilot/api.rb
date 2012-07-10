@@ -70,6 +70,10 @@ module Smspilot
           def at_operator?; #{response.body[request_type].first["status"].eql? AT_OPERATOR_STATUS} end
           def delivered?; #{response.body[request_type].first["status"].eql? DELIVERED_STATUS} end
         RESP
+
+        logger.info("STATUS: #{response.body[request_type].first["status"]}")
+        logger.info("ACCEPTED_STATUS: #{ACCEPTED_STATUS}")
+        logger.info("ARE EQUAL??: #{response.body[request_type].first["status"].eql? ACCEPTED_STATUS}")
       end
 
       response
