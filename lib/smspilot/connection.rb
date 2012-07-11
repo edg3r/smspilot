@@ -19,7 +19,7 @@ module Smspilot
           # conn.request :url_encoded
           conn.request :json
 
-          conn.response :json, :content_type => /\bjson$/
+          conn.response :json
           conn.response :mashify
           conn.response :logger
 
