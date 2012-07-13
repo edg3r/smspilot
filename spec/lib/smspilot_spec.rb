@@ -26,7 +26,7 @@ describe Smspilot do
     let(:json_send_response) { {"send"=> [{"id"=>"12345", "server_id"=>"10005", "from"=>"SMSPILOT", "to"=>"79091112233", "text"=>"Тест", "zone"=>"1", "parts"=>"1", "credits"=>"1", "status"=>"0", "error"=>"0"}], "server_packet_id"=>"1234", "balance"=>"10000"}.to_json}
 
     it "should return correct result when succeeded" do
-      stub_request(:post, Smspilot::Configuration::DEFAULT_ENDPOINT).to_return(:body => json_send_response, :status => 200, :headers => {:content_type => 'application/json'} )
+      stub_normal_request(json_send_response)
       result = @client.send_sms(sms_id, sms_from, sms_to, message_text)
       result.body.should == {"send"=> [{"id"=>"12345", "server_id"=>"10005", "from"=>"SMSPILOT", "to"=>"79091112233", "text"=>"Тест", "zone"=>"1", "parts"=>"1", "credits"=>"1", "status"=>"0", "error"=>"0"}], "server_packet_id"=>"1234", "balance"=>"10000"}
       result.status.should eql(200)
@@ -40,7 +40,7 @@ describe Smspilot do
     let (:check_response_hash) { {"check"=> [{"id"=>"12345", "server_id"=>"10005", "status"=>"1", "modified"=>"2011-08-11 14:35:00"}]} }
 
     it "should return correct hash when succeeded" do
-      stub_request(:post, Smspilot::Configuration::DEFAULT_ENDPOINT).to_return(:body => check_response_hash.to_json, :status => 200, :headers => {:content_type => 'application/json'} )      
+      stub_normal_request(check_response_hash.to_json)      
       
       result = @client.check_sms_status(sms_server_id)
       result.body.should == {"check"=> [{"id"=>"12345", "server_id"=>"10005", "status"=>"1", "modified"=>"2011-08-11 14:35:00"}]} 
@@ -48,35 +48,35 @@ describe Smspilot do
     end
     it "should return correct sms status when succeeded" do
       check_response_hash["check"].first["status"] = Smspilot::Api::NOT_FOUND_STATUS
-      stub_request(:post, Smspilot::Configuration::DEFAULT_ENDPOINT).to_return(:body => check_response_hash.to_json, :status => 200, :headers => {:content_type => 'application/json'} )      
+      stub_normal_request(check_response_hash.to_json)      
       
       result = @client.check_sms_status(sms_server_id)
       result.not_found?.should be_true
     end
     it "should return correct sms status when succeeded" do
       check_response_hash["check"].first["status"] = Smspilot::Api::NOT_DELIVERED_STATUS
-      stub_request(:post, Smspilot::Configuration::DEFAULT_ENDPOINT).to_return(:body => check_response_hash.to_json, :status => 200, :headers => {:content_type => 'application/json'} )      
+      stub_normal_request(check_response_hash.to_json)      
       
       result = @client.check_sms_status(sms_server_id)
       result.not_delivered?.should be_true   
     end
     it "should return correct sms status when succeeded" do
       check_response_hash["check"].first["status"] = Smspilot::Api::ACCEPTED_STATUS
-      stub_request(:post, Smspilot::Configuration::DEFAULT_ENDPOINT).to_return(:body => check_response_hash.to_json, :status => 200, :headers => {:content_type => 'application/json'} )      
+      stub_normal_request(check_response_hash.to_json)      
       
       result = @client.check_sms_status(sms_server_id)
       result.accepted?.should be_true   
     end
     it "should return correct sms status when succeeded" do
       check_response_hash["check"].first["status"] = Smspilot::Api::AT_OPERATOR_STATUS
-      stub_request(:post, Smspilot::Configuration::DEFAULT_ENDPOINT).to_return(:body => check_response_hash.to_json, :status => 200, :headers => {:content_type => 'application/json'} )      
+      stub_normal_request(check_response_hash.to_json)      
       
       result = @client.check_sms_status(sms_server_id)
       result.at_operator?.should be_true   
     end
     it "should return correct sms status when succeeded" do
       check_response_hash["check"].first["status"] = Smspilot::Api::DELIVERED_STATUS
-      stub_request(:post, Smspilot::Configuration::DEFAULT_ENDPOINT).to_return(:body => check_response_hash.to_json, :status => 200, :headers => {:content_type => 'application/json'} )      
+      stub_normal_request(check_response_hash.to_json)      
       
       result = @client.check_sms_status(sms_server_id)
       result.delivered?.should be_true   
@@ -89,7 +89,7 @@ describe Smspilot do
     let(:json_balance_response) {'{"balance":31337}'}
 
     it "should return correct hash when succeeded" do
-      stub_request(:post, Smspilot::Configuration::DEFAULT_ENDPOINT).to_return(:body => json_balance_response, :status => 200, :headers => {:content_type => 'application/json'} )
+      stub_normal_request(json_balance_response)
       
       result = @client.check_balance
       result.body.should == {"balance"=> 31337} 
@@ -101,7 +101,7 @@ describe Smspilot do
   describe "send_request errors" do
 
     before do
-      stub_request(:post, Smspilot::Configuration::DEFAULT_ENDPOINT).to_return(:body => json_failure_response, :status => 200, :headers => {:content_type => 'application/json'} )
+      stub_normal_request(json_failure_response)
     end
 
     it "should be unknown apierror when there is correct error response" do
@@ -118,8 +118,5 @@ describe Smspilot do
     end 
 
   end
-
-
-
 
 end
