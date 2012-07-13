@@ -26,7 +26,7 @@ describe Smspilot do
     let(:json_send_response) {'{"send":[{"id":"12345","server_id":"10005","from":"SMSPILOT","to":"79091112233","text":"Тест","zone":"1","parts":"1","credits":"1","status":"0","error":"0"}],"server_packet_id":"1234","balance":"10000"}'}
 
     it "should return correct result when succeeded" do
-      stub_request(:post, "http://smspilot.ru/api2.php").to_return(:body => json_send_response, :status => 200, :headers => {:content_type => 'application/json'} )
+      stub_request(:post, Smspilot::Configuration::DEFAULT_ENDPOINT).to_return(:body => json_send_response, :status => 200, :headers => {:content_type => 'application/json'} )
       result = @client.send_sms(sms_id, sms_from, sms_to, message_text)
       result.body.should == {"send"=> [{"id"=>"12345", "server_id"=>"10005", "from"=>"SMSPILOT", "to"=>"79091112233", "text"=>"Тест", "zone"=>"1", "parts"=>"1", "credits"=>"1", "status"=>"0", "error"=>"0"}], "server_packet_id"=>"1234", "balance"=>"10000"}
       result.status.should eql(200)
@@ -40,38 +40,38 @@ describe Smspilot do
 
     it "should return correct hash when succeeded" do
       json_check_response = '{"check":[{"id":"12345","server_id":"10005","status":"1","modified":"2011-08-11 14:35:00"}]}'
-      stub_request(:post, "http://smspilot.ru/api2.php").to_return(:body => json_check_response, :status => 200, :headers => {:content_type => 'application/json'} )      
+      stub_request(:post, Smspilot::Configuration::DEFAULT_ENDPOINT).to_return(:body => json_check_response, :status => 200, :headers => {:content_type => 'application/json'} )      
       result = @client.check_sms_status(sms_server_id)
       result.body.should == {"check"=> [{"id"=>"12345", "server_id"=>"10005", "status"=>"1", "modified"=>"2011-08-11 14:35:00"}]} 
       result.status.should eql(200)    
     end
     it "should return correct sms status when succeeded" do
       json_check_response = '{"check":[{"id":"12345","server_id":"10005","status":"-2","modified":"2011-08-11 14:35:00"}]}'
-      stub_request(:post, "http://smspilot.ru/api2.php").to_return(:body => json_check_response, :status => 200, :headers => {:content_type => 'application/json'} )      
+      stub_request(:post, Smspilot::Configuration::DEFAULT_ENDPOINT).to_return(:body => json_check_response, :status => 200, :headers => {:content_type => 'application/json'} )      
       result = @client.check_sms_status(sms_server_id)
       result.not_found?.should be_true
     end
     it "should return correct sms status when succeeded" do
       json_check_response = '{"check":[{"id":"12345","server_id":"10005","status":"-1","modified":"2011-08-11 14:35:00"}]}'
-      stub_request(:post, "http://smspilot.ru/api2.php").to_return(:body => json_check_response, :status => 200, :headers => {:content_type => 'application/json'} )      
+      stub_request(:post, Smspilot::Configuration::DEFAULT_ENDPOINT).to_return(:body => json_check_response, :status => 200, :headers => {:content_type => 'application/json'} )      
       result = @client.check_sms_status(sms_server_id)
       result.not_delivered?.should be_true   
     end
     it "should return correct sms status when succeeded" do
       json_check_response = '{"check":[{"id":"12345","server_id":"10005","status":"0","modified":"2011-08-11 14:35:00"}]}'
-      stub_request(:post, "http://smspilot.ru/api2.php").to_return(:body => json_check_response, :status => 200, :headers => {:content_type => 'application/json'} )      
+      stub_request(:post, Smspilot::Configuration::DEFAULT_ENDPOINT).to_return(:body => json_check_response, :status => 200, :headers => {:content_type => 'application/json'} )      
       result = @client.check_sms_status(sms_server_id)
       result.accepted?.should be_true   
     end
     it "should return correct sms status when succeeded" do
       json_check_response = '{"check":[{"id":"12345","server_id":"10005","status":"1","modified":"2011-08-11 14:35:00"}]}'
-      stub_request(:post, "http://smspilot.ru/api2.php").to_return(:body => json_check_response, :status => 200, :headers => {:content_type => 'application/json'} )      
+      stub_request(:post, Smspilot::Configuration::DEFAULT_ENDPOINT).to_return(:body => json_check_response, :status => 200, :headers => {:content_type => 'application/json'} )      
       result = @client.check_sms_status(sms_server_id)
       result.at_operator?.should be_true   
     end
     it "should return correct sms status when succeeded" do
       json_check_response = '{"check":[{"id":"12345","server_id":"10005","status":"2","modified":"2011-08-11 14:35:00"}]}'
-      stub_request(:post, "http://smspilot.ru/api2.php").to_return(:body => json_check_response, :status => 200, :headers => {:content_type => 'application/json'} )      
+      stub_request(:post, Smspilot::Configuration::DEFAULT_ENDPOINT).to_return(:body => json_check_response, :status => 200, :headers => {:content_type => 'application/json'} )      
       result = @client.check_sms_status(sms_server_id)
       result.delivered?.should be_true   
     end
@@ -83,7 +83,7 @@ describe Smspilot do
     let(:json_check_response) {'{"balance":31337}'}
 
     it "should return correct hash when succeeded" do
-      stub_request(:post, "http://smspilot.ru/api2.php").to_return(:body => json_check_response, :status => 200, :headers => {:content_type => 'application/json'} )
+      stub_request(:post, Smspilot::Configuration::DEFAULT_ENDPOINT).to_return(:body => json_check_response, :status => 200, :headers => {:content_type => 'application/json'} )
       result = @client.check_balance
       result.body.should == {"balance"=> 31337} 
       result.status.should eql(200)    
@@ -94,7 +94,7 @@ describe Smspilot do
   describe "send_request errors" do
 
     before do
-      stub_request(:post, "http://smspilot.ru/api2.php").to_return(:body => json_failure_response, :status => 200, :headers => {:content_type => 'application/json'} )
+      stub_request(:post, Smspilot::Configuration::DEFAULT_ENDPOINT).to_return(:body => json_failure_response, :status => 200, :headers => {:content_type => 'application/json'} )
     end
 
     it "should be unknown apierror when there is correct error response" do
