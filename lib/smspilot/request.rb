@@ -14,20 +14,16 @@ module Smspilot
         end
         
         response_error = (response.status == 200) ? Smspilot::Error::WrongStatusError : nil
-        logger.info("send_sms request")
 
       rescue Exception => e 
         if e.kind_of? Faraday::Error::TimeoutError
-          logger.error("TIMEOUT #{e}")     
           response_error = Smspilot::Error::TimeoutError
         elsif e.kind_of? Faraday::Error::ParsingError
-          logger.error("PARSING #{e}")     
           response_error = Smspilot::Error::ParsingError      
         end 
       end 
 
       unless response.body["error"].nil?
-        logger.error("#{response.body["error"]["code"]}")
         response_error = Error::ApiError.get_by_code(response.body["error"]["code"]).new()
       end
 
