@@ -21,7 +21,7 @@ module Smspilot
 
           conn.response :json
           conn.response :mashify
-          conn.response :logger
+          conn.response :logger, logger
 
           conn.adapter(adapter)
         end

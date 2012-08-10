@@ -11,6 +11,7 @@ module Smspilot
       begin
         response = connection.post do |req|
           req.body = json_body
+          logger.info("--------\n" + req.body)
         end
         
         response_error = (response.status == 200) ? Smspilot::Error::WrongStatusError : nil
