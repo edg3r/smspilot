@@ -23,7 +23,9 @@ Or install it yourself as:
 create
 
 ```ruby
-client = Smspilot.new api_token
+client = Smspilot.new api_key
+#or
+client = Smspilot.new (api_key: "yourkey", login: "yourlogin", password: "yourpass")
 ```
 
 api methods
