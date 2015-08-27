@@ -36,8 +36,8 @@ module Smspilot
       enhance_response(response, "check")
     end
 
-    def check_balance
-      body = {"balance" => [{"balance" => true}]}
+    def check_balance(format = 'rur')
+      body = { :balance => format }
       send_request body
     end
 
@@ -74,5 +74,5 @@ module Smspilot
 
       response
     end
- end
+  end
 end
