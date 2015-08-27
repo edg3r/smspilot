@@ -7,16 +7,17 @@ module Smspilot
 
       def connection
         options = {
+          :url => endpoint,
           :headers => {
             :user_agent => user_agent
           },
-          :url => endpoint,
-          :timeout => timeout,
-          :open_timeout => timeout
+          :request => {
+            :timeout => timeout,
+            :open_timeout => timeout
+          }
         }
 
         Faraday.new options do |conn|
-          # conn.request :url_encoded
           conn.request :json
 
           conn.response :json

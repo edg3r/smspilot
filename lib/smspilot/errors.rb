@@ -81,12 +81,9 @@ module Smspilot
     class ServerPacketIdInvalidError < ApiError; end # 304
     class UserNotFoundError < ApiError; end # 400
     class UnknownApiError < ApiError; end # unknown codes
-
-
     class TimeoutError < StandardError; end;
     class InvalidJsonResponseError < StandardError; end;
     class InvalidResposeStatusError < StandardError; end;
-
-
+    class ParsingError < StandardError; end;
   end
 end
